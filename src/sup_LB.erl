@@ -20,29 +20,29 @@ start_link() ->
 init([]) ->
   Server1 = {
     server1,
-    {loadBalance, start_link,[server1]},
+    {server, start_link,[server1]},
     permanent,
     2000,
     worker,
-    [loadBalance]
+    [server]
   },
   Server2 = {
     server2,
-    {loadBalance, start_link,[server2]},
+    {server, start_link,[server2]},
     permanent,
     2000,
     worker,
-    [loadBalance]
+    [server]
   },
 
   Server3 = {
     server3,
-    {loadBalance, start_link,[server3]},
+    {server, start_link,[server3]},
     permanent,
     2000,
     worker,
-    [loadBalance]
+    [server]
   },
-  {ok, {{rest_for_one, 1, 60000}, [Server1, Server2, Server3]}}.
+  {ok, {{one_for_one, 3, 60000}, [Server1, Server2, Server3]}}.
 
 
