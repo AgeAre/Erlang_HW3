@@ -19,20 +19,18 @@ start_link(ServerName) ->
   gen_server:start_link({local, ServerName}, ?MODULE, [ServerName], []).
 
 init([ServerName]) ->
-  State = 0,
+  case ServerName of
+    server1 -> State = 4;
+    server2 -> State = 4;
+    server3 -> State = 6
+  end,
   %process_flag(trap_exit, true),
   io:format("~n~p is up~n",[ServerName]),
   {ok, {ServerName, State}}.
 
 
-
-
-
 handle_call({state}, _From, {Name, State}) ->
   Reply = State,
-  %io:format("~nThe state is ~p~n",[State]),
-%%  io:format("~n @@@@@@@@@@@@@@~p, ~p, ~p@@@@@@@@@@@@@@@@ ~n",[Name, _From, State]),
-%%  gen_server:cast(server2, )
   {reply, Reply, State}.
 
 handle_cast(_Msg, State) ->
