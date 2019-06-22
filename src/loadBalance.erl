@@ -12,15 +12,18 @@
 
 %% API
 -export([startServers/0, stopServers/0,
-  numberOfRunningFunctions/1, calcFun/3,getLeastBusyServ/0]).
+  numberOfRunningFunctions/1, calcFun/3]).
 
 
 
 startServers() ->
   sup_LB:start_link().
 
+%TODO: Still not working properly
 stopServers() ->
-  erlang:error(not_implemented).
+  gen_server:stop(server1),
+  gen_server:stop(server2),
+  gen_server:stop(server3).
 
 numberOfRunningFunctions(ServNum) ->
   case ServNum of
@@ -31,16 +34,14 @@ numberOfRunningFunctions(ServNum) ->
   end.
 
 calcFun(Pid, F, MsgRef) ->
-  %gen_server:cast(Server1, ),
   LeastBusyServ = getLeastBusyServ(),
-  case LeastBusyServ of
-    server1 -> server1 ! {Pid, F, MsgRef};
-    server2 -> server2 ! {Pid, F, MsgRef};
-    server3 -> server3 ! {Pid, F, MsgRef}
-  end,
+  gen_server:cast(LeastBusyServ, {calc, Pid, F, MsgRef}),
+%%  case LeastBusyServ of
+%%    server1 -> server1 ! {Pid, F, MsgRef};
+%%    server2 -> server2 ! {Pid, F, MsgRef};
+%%    server3 -> server3 ! {Pid, F, MsgRef}
+%%  end,
   ok.
-
-
 
 getLeastBusyServ() ->
   Srv1 = numberOfRunningFunctions(1),

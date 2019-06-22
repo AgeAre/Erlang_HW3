@@ -19,23 +19,26 @@ start_link(ServerName) ->
   gen_server:start_link({local, ServerName}, ?MODULE, [ServerName], []).
 
 init([ServerName]) ->
+  process_flag(trap_exit, true),
   case ServerName of
-    server1 -> State = 4;
+    server1 -> State = 5;
     server2 -> State = 4;
     server3 -> State = 6
   end,
-  %process_flag(trap_exit, true),
   io:format("~n~p is up~n",[ServerName]),
   {ok, {ServerName, State}}.
 
+% Reply will be automatically returned to the caller
+handle_call({state}, _From, {ServName, NumOfFunc}) ->
+  Reply = NumOfFunc,
+  {reply, Reply, {ServName, NumOfFunc}}.
 
-handle_call({state}, _From, {Name, State}) ->
-  Reply = State,
-  {reply, Reply, State}.
+handle_cast({calc, SourceOrg, F, MsgRef}, {ServName, NumOfFunc}) ->
+  spawn(fun() -> runFun(ServName, SourceOrg, F, MsgRef) end),
+  {noreply, {ServName, NumOfFunc + 1}};
 
-handle_cast(_Msg, State) ->
-  Reply = ok,
-  {reply, Reply, State}.
+handle_cast({funDone}, {ServName, NumOfFunc}) ->
+  {noreply, {ServName, NumOfFunc - 1}}.
 
 handle_info(_Info, State) ->
   {noreply, State}.
@@ -46,3 +49,8 @@ terminate(_Reason, _State) ->
 code_change(_OldV, State, _Extra) ->
   {ok, State}.
 
+runFun(ServName, SourceOrg, F, MsgRef) ->
+  Res = F(),
+  io:format("Source Pid is ~p~n", [SourceOrg]),
+  SourceOrg ! {MsgRef, Res},
+  gen_server:cast(ServName, {funDone}).
