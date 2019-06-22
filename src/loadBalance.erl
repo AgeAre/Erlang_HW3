@@ -27,7 +27,7 @@ numberOfRunningFunctions(ServNum) ->
     1 -> gen_server:call(server1,{state});
     2 -> gen_server:call(server2,{state});
     3 -> gen_server:call(server3,{state});
-    Else -> {invalid_number}
+    Else -> { invalid_number }
   end.
 
 calcFun(Pid, F, MsgRef) ->
