@@ -43,6 +43,6 @@ init([]) ->
     worker,
     [server]
   },
-  {ok, {{one_for_one, 3, 60000}, [Server1, Server2, Server3]}}.
+  {ok, {{one_for_one, 3, 1}, [Server1, Server2, Server3]}}.
 
 
