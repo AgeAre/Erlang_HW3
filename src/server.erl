@@ -30,6 +30,10 @@ handle_call({state}, _From, {ServerName, NumOfFunc}) ->
 handle_cast({calc, SourceOrg, F, MsgRef}, {ServerName, NumOfFunc}) ->
   spawn(fun() -> runFun(ServerName, SourceOrg, F, MsgRef) end),
   {noreply, {ServerName, NumOfFunc + 1}};
+  %Ret = F(),
+  %io:format("~n~p~n",[Ret]),
+  %SourceOrg ! Ret,
+  %{noreply, {ServerName, NumOfFunc + 1}};
 
 handle_cast({funDone}, {ServerName, NumOfFunc}) ->
   {noreply, {ServerName, NumOfFunc - 1}}.

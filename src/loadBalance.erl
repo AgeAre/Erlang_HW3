@@ -19,17 +19,18 @@
 startServers() ->
   sup_LB:start_link().
 
-%TODO: Still not working properly
+%TODO: Should we kill loadBalance?
 stopServers() ->
-  exit(sup_LB, shutdown).
+  exit(whereis(sup_LB), shutdown).
+
 
 numberOfRunningFunctions(ServerName) ->
   case ServerName of
     1 -> gen_server:call(server1,{state});
     2 -> gen_server:call(server2,{state});
-    3 -> gen_server:call(server3,{state});
-    Else -> { invalid_number }
+    3 -> gen_server:call(server3,{state})
   end.
+
 
 calcFun(Pid, F, MsgRef) ->
   LeastBusyServ = getLeastBusyServ(),
