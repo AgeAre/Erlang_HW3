@@ -21,38 +21,16 @@ whereare()->
 battle()->
   %compile:file(loadBalance),compile:file(sup_LB),compile:file(server),
   F3 = fun()-> timer:sleep(3),3*3 end,
-  F5 = fun()-> timer:sleep(10000),4*4 end,
+  F5 = fun()-> timer:sleep(3000),4*4 end,
 
   %Divide 10 functions:
   whereare(),
-  myLoop(F3,10),
+  myLoop(F5,10),
   status(fastTest),
-  myLoop(F5,100000),
+  myLoop(F3,3),
   status(sec0),
-  timer:sleep(1000),
-  status(sec1),
-  timer:sleep(1000),
-  status(sec2),
-  timer:sleep(1000),
-  status(sec3),
-  timer:sleep(1000),
-  status(sec4),
-  timer:sleep(1000),
-  status(sec5),
-  timer:sleep(1000),
-  status(sec6),
-  timer:sleep(1000),
-  status(sec7),
-  timer:sleep(1000),
-  status(sec8),
-  timer:sleep(1000),
-  status(sec9),
-  timer:sleep(1000),
-  status(sec10_end_test),
-  timer:sleep(1000),
-  status(sec11),
-  timer:sleep(1000),
-  status(sec12),
+  timer:sleep(15000),
+  status(sec0),
   ok.
 
 myLoop(_F,0)->
@@ -62,13 +40,12 @@ myLoop(F,Times)->
   loadBalance:calcFun(self(),F,make_ref()),
   myLoop(F,Times-1).
 
-
-
 main()->
   start(),
   battle(),
-  stop(),
+  timer:sleep(5000),
   c:flush(),
+  stop(),
   ok_main.
 
 
